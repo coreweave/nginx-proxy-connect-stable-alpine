@@ -1,16 +1,16 @@
-FROM alpine:3.12.7
+FROM alpine:3.19.0
 
 # apk upgrade in a separate layer (musl is huge)
 RUN apk upgrade --no-cache --update
 
 # Bring in tzdata and runtime libs into their own layer
-RUN apk add --no-cache --update tzdata pcre zlib libssl1.1
+RUN apk add --no-cache --update tzdata pcre zlib libssl3
 
 # If set to 1, enables building debug version of nginx, which is super-useful, but also heavy to build.
 ARG DEBUG_BUILD="1"
 ENV DO_DEBUG_BUILD="$DEBUG_BUILD"
 
-ENV NGINX_VERSION 1.20.1
+ENV NGINX_VERSION 1.25.3
 
 # nginx layer
 RUN CONFIG="\
@@ -60,7 +60,7 @@ RUN CONFIG="\
 	&& tar -zxC /usr/src -f nginx.tar.gz \
 	&& rm nginx.tar.gz \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
-	&& patch -p1 < $PROXY_CONNECT_MODULE_PATH/patch/proxy_connect_rewrite_101504.patch \
+	&& patch -p1 < $PROXY_CONNECT_MODULE_PATH/patch/proxy_connect_rewrite_102101.patch \
 	&& [ "a$DO_DEBUG_BUILD" == "a1" ] && { echo "Bulding DEBUG" &&  ./configure $CONFIG --with-debug && make -j$(getconf _NPROCESSORS_ONLN) && mv objs/nginx objs/nginx-debug ; } || { echo "Not building debug"; } \
 	&& { echo "Bulding RELEASE" && ./configure $CONFIG  && make -j$(getconf _NPROCESSORS_ONLN) && make install; } \
 	&& ls -laR objs/addon/ngx_http_proxy_connect_module/ \
