@@ -7,8 +7,7 @@ RUN apk upgrade --no-cache --update
 RUN apk add --no-cache --update tzdata pcre zlib libssl3
 
 # If set to 1, enables building debug version of nginx, which is super-useful, but also heavy to build.
-ARG DEBUG_BUILD="1"
-ENV DO_DEBUG_BUILD="$DEBUG_BUILD"
+ARG DO_DEBUG_BUILD="${DEBUG_IMAGE:-"0"}"
 
 ENV NGINX_VERSION 1.25.3
 
