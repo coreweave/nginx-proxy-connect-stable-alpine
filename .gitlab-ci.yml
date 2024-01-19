@@ -32,7 +32,6 @@ build-standard:
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
   script: |-
     /kaniko/executor \
-      $KANIKO_ADDTL_ARGS \
       --context ${CI_PROJECT_DIR} \
       --build-arg DEBUG_IMAGE=${DEBUG_IMAGE} \
       --dockerfile $DOCKERFILE \
@@ -60,7 +59,6 @@ build-debug:
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
   script: |-
     /kaniko/executor \
-      $KANIKO_ADDTL_ARGS \
       --context ${CI_PROJECT_DIR} \
       --build-arg DEBUG_IMAGE=${DEBUG_IMAGE} \
       --dockerfile $DOCKERFILE \
@@ -110,8 +108,7 @@ release-standard:
     - export RELEASE_IMAGE=$CI_REGISTRY_IMAGE:$BUILD_VERSION
   script: |-
     /kaniko/executor \
-    $KANIKO_ADDTL_ARGS \
-    --context . \
+    --context ${CI_PROJECT_DIR} \
     --dockerfile $DOCKERFILE \
     --build-arg DEBUG_IMAGE=${DEBUG_IMAGE} \
     --destination $RELEASE_IMAGE \
@@ -139,8 +136,7 @@ release-debug:
     - export RELEASE_IMAGE=$CI_REGISTRY_IMAGE:$BUILD_VERSION-debug
   script: |-
     /kaniko/executor \
-    $KANIKO_ADDTL_ARGS \
-    --context . \
+    --context ${CI_PROJECT_DIR} \
     --dockerfile $DOCKERFILE \
     --build-arg DEBUG_IMAGE=${DEBUG_IMAGE} \
     --destination $RELEASE_IMAGE \
