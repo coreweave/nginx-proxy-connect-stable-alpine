@@ -10,7 +10,7 @@ RUN apk add --no-cache --update tzdata pcre zlib libssl3
 ARG DEBUG_IMAGE
 ARG DO_DEBUG_BUILD="${DEBUG_IMAGE:-"0"}"
 
-ENV NGINX_VERSION 1.25.3
+ENV NGINX_VERSION 1.27.2
 
 # nginx layer
 RUN CONFIG="\
